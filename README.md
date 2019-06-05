@@ -7,4 +7,6 @@ Na raiz do repositório, executar `python src/classifier.py`. Assegure que o pro
 executado com _Python 3_.
 
 ## Pré-requisitos
-_Python 3_ com _NumPy_ e _SciPy_. 
+ - _Python 3_ com _NumPy_ e _SciPy_ 
+ - _Matplotlib_
+ - _jupyter_ para ter acesso à apresentação em _doc_
