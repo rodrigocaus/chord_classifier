@@ -5,7 +5,7 @@ from scipy import signal
 import math
 
 
-def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp'):
+def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp', winn='flat'):
     '''
             Calculates the chromagram of an audio sample.
 
@@ -14,6 +14,7 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp'):
                         rate: sample frequency of 'data'.
                         wilen: lenght of segment of FFT.
 						scale: type of chroma-scale (sharp, flat or number)
+                        winn: type of window (flat, gauss)
 
                 Returns:
                         chromas: array of chroma-scale (C, C#, D, ..., B).
@@ -42,7 +43,17 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp'):
             upidx = center*(1.0 + devfreq)
             upidx = math.floor((len(f) - 1)*(upidx - f[0])/(fmax - f[0]))
             winfilter = np.zeros(shape=spectrum.shape)
-            winfilter[loidx:upidx] = 1.0
+            
+            if winn == 'gauss':
+                # Gaussian window inst
+                sigma = (upidx - loidx + 1.0)/6.0
+                mu = (len(f) - 1)*(center - f[0])/(fmax - f[0])
+
+                for i in range(upidx - loidx + 1):
+                    winfilter[loidx+i] = __gaussian(loidx + i, mu, sigma)
+            else:
+                winfilter[loidx:upidx] = 1.0
+
             chromagram[chromaidx, timeidx] += np.dot(spectrum, winfilter)
             chromaidx = (chromaidx + 1) % 12
             centeridx += 1
@@ -69,3 +80,6 @@ def chromaplot(t, scale, chroma):
     plt.yticks(
         ticks=[i for i in range(len(scale))], labels=scale)
     return ax
+
+def __gaussian(x, mu, sig):
+    return (1.0/(sig*np.sqrt(2.0*np.pi)))*np.exp(((x-mu)/sig)**2/(-2.0))
