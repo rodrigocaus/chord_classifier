@@ -16,7 +16,7 @@ Ou, caso não tenha pipenv instalado:
  $ pip install scipy matplotlib
 ```
 
-# Run
+## Run
 
 Na raíz do projeto:
 
