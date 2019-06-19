@@ -37,7 +37,7 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp', winn='ret'):
         chromaidx = 9
         centeridx = 0
 
-        while center*(1.0 + devfreq) < fmax and center*(1.0 + devfreq) < 20e3:
+        while center*(1.0 + devfreq) < fmax and center*(1.0 + devfreq) < 5e3:
             loidx = center*(1.0 - devfreq)
             loidx = math.ceil((len(f) - 1)*(loidx - f[0])/(fmax - f[0]))
             upidx = center*(1.0 + devfreq)
