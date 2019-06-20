@@ -6,7 +6,7 @@ from chroma import chromagram_stft
 from chroma import chromaplot
 
 
-filename = "wav/ChromaticScaleUp.wav"
+filename = "wav/CMajor2.wav"
 Fs, data = wavfile.read(filename)
 
 scale, t, Ch = chromagram_stft(data, rate=Fs, winn='gauss')

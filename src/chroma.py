@@ -14,14 +14,14 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp', winn='ret'):
                         rate: sample frequency of 'data'.
                         wilen: lenght of segment of FFT.
                                                 scale: type of chroma-scale (sharp, flat or number)
-                        winn: type of window (ret, gauss, hann)
+                        winn: type of window - ret, gauss, hann, flattop, exp
 
                 Returns:
                         chromas: array of chroma-scale (C, C#, D, ..., B).
                         t: time scale array.
                         chomagram: ndarray of the chromagram. Last axis is the time scale.
     '''
-    f, t, Stf = signal.stft(data, fs=rate, nperseg=winlen)
+    f, t, Stf = signal.stft(data, fs=rate, nperseg=winlen, nfft=int(32*winlen))
     # Better results with abs^2
     Stf = np.abs(Stf)**2
 
@@ -47,12 +47,18 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp', winn='ret'):
             if winn == 'gauss':
                 # Gaussian window inst
                 sigma = (upidx - loidx + 1.0)/6.0
-                mu = (len(f) - 1)*(center - f[0])/(fmax - f[0])
-                for i in range(upidx - loidx + 1):
-                    winfilter[loidx+i] = __gaussian(loidx + i, mu, sigma)
+                g = signal.windows.gaussian(upidx - loidx + 1, std=sigma)
+                winfilter[loidx:upidx+1] = g[0:upidx-loidx+1]
             elif winn == 'hann':
-                h = np.hanning(upidx - loidx + 1)
+                h = signal.windows.hann(upidx - loidx + 1)
                 winfilter[loidx:upidx+1] = h[0:upidx-loidx+1]
+            elif winn == 'flattop':
+                flat = signal.windows.flattop(upidx - loidx + 1)
+                winfilter[loidx:upidx+1] = flat[0:upidx-loidx+1]
+            elif winn == 'exp':
+                avg = (upidx - loidx + 1.0)/4.0
+                e = signal.windows.exponential(upidx - loidx + 1, tau=avg)
+                winfilter[loidx:upidx+1] = e[0:upidx-loidx+1]
             elif winn == 'ret':
                 winfilter[loidx:upidx+1] = 1.0
 
@@ -101,4 +107,4 @@ def chromaplot(t, scale, chroma):
 
 
 def __gaussian(x, mu, sig):
-    return (1.0/(sig*np.sqrt(2.0*np.pi)))*np.exp(((x-mu)/sig)**2/(-2.0))
+    return (1.0/(sig*np.sqrt(2.0*np.pi)))*np.exp((((x-mu)/sig)**2)/(-2.0))
