@@ -1,7 +1,9 @@
-
-from scipy.io import wavfile
 import matplotlib.pyplot as plt
+import statistics
 
+from statistics import StatisticsError
+from scipy.io import wavfile
+from statistics import mode 
 from chroma import chromagram_stft
 from chroma import chromaplot
 
@@ -33,7 +35,6 @@ def get_note_list(data, rate=1.0, winlen=2048, scale='sharp', winn='ret'):
         
     return result
 
-
 def gen_chords(chromas):
     '''
             Generates triad chords as a dictionary like C:['C','E','G'].
@@ -48,12 +49,51 @@ def gen_chords(chromas):
     chords = {}
     for c in range(len(chromas)):
         # Major chords (C, C#, D, ..., B)
-        chords[chromas[c]+chromas[(c+4)%len(chromas)]+chromas[(c+7)%len(chromas)]] = chromas[c]
+        cur_chord = [chromas[c],chromas[(c+4)%len(chromas)],chromas[(c+7)%len(chromas)]]
+        cur_chord.sort()
+        chords[''.join(cur_chord)] = chromas[c]
         # Minor chords (Cm, C#m, Dm, ..., Bm)
-        chords[chromas[c]+chromas[(c+3)%len(chromas)]+chromas[(c+7)%len(chromas)]] = chromas[c]+'m'
+        cur_chord = [chromas[c],chromas[(c+3)%len(chromas)],chromas[(c+7)%len(chromas)]]
+        cur_chord.sort()
+        chords[''.join(cur_chord)] = chromas[c]+'m'
         # Diminished chords (Cd, C#d, Dd, ..., Bd)
-        chords[chromas[c]+chromas[(c+3)%len(chromas)]+chromas[(c+6)%len(chromas)]] = chromas[c]+'d'
+        cur_chord = [chromas[c],chromas[(c+3)%len(chromas)],chromas[(c+6)%len(chromas)]]
+        cur_chord.sort()
+        chords[''.join(cur_chord)] = chromas[c]+'d'
         # Augmented chords (C+, C#+, D+, ..., B+)
-        chords[chromas[c]+chromas[(c+4)%len(chromas)]+chromas[(c+8)%len(chromas)]] = chromas[c]+'+'
+        cur_chord = [chromas[c],chromas[(c+4)%len(chromas)],chromas[(c+8)%len(chromas)]]
+        cur_chord.sort()
+        chords[''.join(cur_chord)] = chromas[c]+'m'        
 
+    return chords
+
+def compress_result(Ch, window=4):
+    '''
+            Generates the avarage chord recognized within 'window' of samples.
+            
+            Args:
+                    Ch: array of chords.
+                    window: size of compression.
+            Return:
+                    Chords: array of compressed chords.    
+    '''
+    Chords = []
+    for i in range(0,len(Ch),window):
+        try:
+            M = mode(Ch[i:i+window])
+        except StatisticsError as e:
+            M = None
+        Chords.append(M)
+
+    return Chords
+
+def chord_to_string(Ch,scale):
+    chord_list = gen_chords(scale)
+    chords = []
+    for sample in Ch:
+        sample_str = ''.join(sample)
+        if sample_str in chord_list:
+            chords.append(chord_list[sample_str])
+        else:
+            chords.append(None)
     return chords
