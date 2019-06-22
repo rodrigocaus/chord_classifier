@@ -63,7 +63,7 @@ def gen_chords(chromas):
         # Augmented chords (C+, C#+, D+, ..., B+)
         cur_chord = [chromas[c],chromas[(c+4)%len(chromas)],chromas[(c+8)%len(chromas)]]
         cur_chord.sort()
-        chords[''.join(cur_chord)] = chromas[c]+'m'        
+        chords[''.join(cur_chord)] = chromas[c]+'+'        
 
     return chords
 
