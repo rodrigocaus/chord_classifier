@@ -46,6 +46,7 @@ def near_precision(chords, expected_chords):
         # Same chord and quality
         if expected_chord == chord:
             correct_chords += 3
+            continue
             
         # Removing 'm', 'd' or '+' from end
         if expected_chord[-1] == 'm' or \
@@ -61,6 +62,7 @@ def near_precision(chords, expected_chords):
         #  Same chord but different quality
         if expected_chord == chord:
             correct_chords += 2
+            continue
         
         # Near chord
         if scales.indexof(expected_chord[c]) == scales.indexof(chord)-1 or \
@@ -68,6 +70,7 @@ def near_precision(chords, expected_chords):
            (scales.indexof(expected_chord[c]) == 0 and chord == 11) or \
            (scales.indexof(expected_chord[c]) == 11 and chord == 0):
             correct_chords += 1
+            continue
     
     return correct_chords/(min(len(expected_chords['chords']), len(chords))*4)
 
@@ -90,7 +93,7 @@ def print_precisions(sample):
         expected_chords = json.load(json_file)
         
         # Using our algorithm to get precisions
-        window = int((44100/1024)*expected_chords['time_step'])
+        window = int((Fs/1024)*expected_chords['time_step'])
         chords = classifier.compress_result(note_strings, window=window)
 
         # Starts comparing
