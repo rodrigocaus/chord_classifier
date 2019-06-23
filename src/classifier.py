@@ -82,7 +82,7 @@ def compress_result(Ch, window=4):
         try:
             M = mode(Ch[i:i+window])
         except StatisticsError as e:
-            M = None
+            M = ''
         Chords.append(M)
 
     return Chords
@@ -95,5 +95,5 @@ def chord_to_string(Ch,scale):
         if sample_str in chord_list:
             chords.append(chord_list[sample_str])
         else:
-            chords.append(None)
+            chords.append('')
     return chords
