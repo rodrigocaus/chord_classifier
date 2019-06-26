@@ -21,7 +21,7 @@ def exact_precision(chords, expected_chords):
     
     return correct_chords/min(len(expected_chords['chords']), len(chords))
 
-def near_precision(chords, expected_chords):
+def near_precision(chords, expected_chords, scales):
     '''
         Compare chords and returns percentage of correct notes
         It gives the current points:
@@ -42,6 +42,9 @@ def near_precision(chords, expected_chords):
     for c in range(min(len(expected_chords['chords']), len(chords))):
         expected_chord = expected_chords['chords'][c]
         chord = chords[c]
+
+        if expected_chord == '':
+            continue
         
         # Same chord and quality
         if expected_chord == chord:
@@ -65,10 +68,10 @@ def near_precision(chords, expected_chords):
             continue
         
         # Near chord
-        if scales.indexof(expected_chord[c]) == scales.indexof(chord)-1 or \
-           scales.indexof(expected_chord[c]) == scales.indexof(chord)+1 or \
-           (scales.indexof(expected_chord[c]) == 0 and chord == 11) or \
-           (scales.indexof(expected_chord[c]) == 11 and chord == 0):
+        if scales.index(expected_chord[c]) == scales.index(chord)-1 or \
+           scales.index(expected_chord[c]) == scales.index(chord)+1 or \
+           (scales.index(expected_chord[c]) == 0 and chord == 11) or \
+           (scales.index(expected_chord[c]) == 11 and chord == 0):
             correct_chords += 1
             continue
     
@@ -99,5 +102,5 @@ def print_precisions(sample):
         # Starts comparing
         exact_percentage = exact_precision(chords, expected_chords)
         print('The exact precision is {0:.2f}%'.format(exact_percentage*100))
-        near_percentage = exact_precision(chords, expected_chords)
+        near_percentage = near_precision(chords, expected_chords, scale)
         print('The near precision is {0:.2f}%'.format(near_percentage*100))
