@@ -43,7 +43,9 @@ def near_precision(chords, expected_chords, scales):
         expected_chord = expected_chords['chords'][c]
         chord = chords[c]
 
-        if expected_chord == '':
+        if expected_chord == '' or chord == '':
+            if expected_chord == '' and chord == '':
+                correct_chords += 4
             continue
         
         # Same chord and quality
@@ -68,10 +70,10 @@ def near_precision(chords, expected_chords, scales):
             continue
         
         # Near chord
-        if scales.index(expected_chord[c]) == scales.index(chord)-1 or \
-           scales.index(expected_chord[c]) == scales.index(chord)+1 or \
-           (scales.index(expected_chord[c]) == 0 and chord == 11) or \
-           (scales.index(expected_chord[c]) == 11 and chord == 0):
+        if scales.index(expected_chord) == scales.index(chord)-1 or \
+           scales.index(expected_chord) == scales.index(chord)+1 or \
+           (scales.index(expected_chord) == 0 and chord == 11) or \
+           (scales.index(expected_chord) == 11 and chord == 0):
             correct_chords += 1
             continue
     
