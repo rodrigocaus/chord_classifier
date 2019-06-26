@@ -95,5 +95,8 @@ def chord_to_string(Ch,scale):
         if sample_str in chord_list:
             chords.append(chord_list[sample_str])
         else:
-            chords.append('')
+            if len(chords):
+                chords.append(chords[-1])
+            else:
+                chords.append('')
     return chords

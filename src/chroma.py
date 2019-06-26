@@ -98,9 +98,9 @@ def chromagram_stft(data, rate=1.0, winlen=2048, scale='sharp', winn='ret'):
     return chromas, t, chromagram
 
 
-def chromaplot(t, scale, chroma):
+def chromaplot(t, scale, chroma, **kwargs):
     ax = plt.imshow(chroma, cmap='hot', interpolation=None, extent=[
-        t[0], t[len(t)-1], -0.5, len(scale)-0.5], origin='lower', aspect='auto')
+        t[0], t[len(t)-1], -0.5, len(scale)-0.5], origin='lower', aspect='auto', **kwargs)
     plt.yticks(
         ticks=[i for i in range(len(scale))], labels=scale)
     return ax
