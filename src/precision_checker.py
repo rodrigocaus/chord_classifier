@@ -72,7 +72,7 @@ def near_precision(chords, expected_chords):
             correct_chords += 1
             continue
     
-    return correct_chords/(min(len(expected_chords['chords']), len(chords))*4)
+    return correct_chords/(min(len(expected_chords['chords']), len(chords))*3)
 
 def print_precisions(sample):
     '''
